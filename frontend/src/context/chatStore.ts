@@ -206,7 +206,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
         const lines = chunk.split('\n')
         for (const line of lines) {
           if (line.startsWith('data: ')) {
-            const dataStr = line.replace('data: ', '').strip()
+            const dataStr = line.replace('data: ', '').trim()
             if (dataStr === '[DONE]') {
               break
             }

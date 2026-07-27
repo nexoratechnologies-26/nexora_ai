@@ -7,10 +7,8 @@ import {
   Check, 
   Mic, 
   MicOff, 
-  Sparkles,
   Bot,
-  User as UserIcon,
-  ChevronDown
+  User as UserIcon
 } from 'lucide-react'
 import { useChatStore } from '../context/chatStore'
 import { useSettingsStore } from '../context/settingsStore'
@@ -30,7 +28,7 @@ export const Chat: React.FC = () => {
     sendMessage 
   } = useChatStore()
 
-  const { settings, getApiKeys } = useSettingsStore()
+  const { settings } = useSettingsStore()
   const { token } = useAuthStore()
 
   const [input, setInput] = useState('')
@@ -53,7 +51,7 @@ export const Chat: React.FC = () => {
   }, [messages])
 
   const handleSend = async () => {
-    if (!input.strip()) return
+    if (!input.trim()) return
     const text = input
     setInput('')
     await sendMessage(text)
@@ -101,7 +99,7 @@ export const Chat: React.FC = () => {
           if (res.ok) {
             const data = await res.json()
             if (data.text) {
-              setInput((prev) => (prev + ' ' + data.text).strip())
+              setInput((prev) => (prev + ' ' + data.text).trim())
             }
           }
         } catch (err) {
@@ -135,7 +133,7 @@ export const Chat: React.FC = () => {
         // Code Block
         const rawCode = part.replace(/```/g, '')
         const lines = rawCode.split('\n')
-        const language = lines[0].strip() || 'code'
+        const language = lines[0].trim() || 'code'
         const codeText = lines.slice(1).join('\n')
         
         return (
@@ -331,7 +329,7 @@ export const Chat: React.FC = () => {
                   />
                   <button
                     onClick={handleSend}
-                    disabled={isGenerating || !input.strip()}
+                    disabled={isGenerating || !input.trim()}
                     className="absolute right-3 top-2.5 p-1 text-slate-500 hover:text-indigo-400 transition-colors disabled:opacity-30 disabled:hover:text-slate-500 cursor-pointer"
                   >
                     <Send size={16} />

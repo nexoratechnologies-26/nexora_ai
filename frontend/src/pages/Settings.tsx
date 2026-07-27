@@ -2,19 +2,16 @@ import React, { useEffect, useState } from 'react'
 import { 
   Save, 
   Cpu, 
-  Settings as SettingsIcon, 
   Eye, 
   EyeOff, 
-  Clipboard, 
-  Volume2, 
   Sliders,
   Check,
   Key
 } from 'lucide-react'
-import { useSettingsStore, Settings as SettingsType } from '../context/settingsStore'
+import { useSettingsStore } from '../context/settingsStore'
 
 export const Settings: React.FC = () => {
-  const { settings, isLoading, error, loadSettings, updateSettings, getApiKeys, setApiKey } = useSettingsStore()
+  const { settings, isLoading, error, loadSettings, updateSettings, getApiKeys } = useSettingsStore()
 
   // Form states
   const [theme, setTheme] = useState<'dark' | 'light'>('dark')

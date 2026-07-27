@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Bot, Shield, Cpu, Code, Lock } from 'lucide-react'
+import { Bot, Shield, Code, Lock } from 'lucide-react'
 
 export const About: React.FC = () => {
   const [version, setVersion] = useState('1.0.0')

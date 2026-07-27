@@ -52,7 +52,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       }
     } catch (e) {
       // Offline or network error
-      set({ isAuthenticated: true }) # Assume authenticated from token cache to allow local-first offline usage
+      set({ isAuthenticated: true }) // Assume authenticated from token cache to allow local-first offline usage
     } finally {
       set({ isLoading: false })
     }

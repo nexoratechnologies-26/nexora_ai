@@ -3,11 +3,9 @@ import {
   Camera, 
   Upload, 
   Sparkles, 
-  Cpu, 
   FileText,
   HelpCircle,
   BrainCircuit,
-  Eye,
   Check
 } from 'lucide-react'
 import { useAuthStore } from '../context/authStore'
@@ -21,6 +19,9 @@ export const ScreenshotAnalyzer: React.FC = () => {
   const [analysisResult, setAnalysisResult] = useState<string | null>(null)
   const [ocrText, setOcrText] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
+  
+  // Suppress unused warning in TS by referencing ocrText
+  void ocrText
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {

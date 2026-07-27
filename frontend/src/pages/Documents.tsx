@@ -3,11 +3,7 @@ import {
   FileText, 
   UploadCloud, 
   Trash2, 
-  BookOpen, 
   Brain, 
-  ArrowRight,
-  Eye,
-  Check,
   ChevronLeft,
   ChevronRight
 } from 'lucide-react'

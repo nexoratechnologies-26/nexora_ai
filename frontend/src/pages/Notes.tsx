@@ -3,12 +3,9 @@ import {
   FolderPlus, 
   Plus, 
   Trash2, 
-  FileText, 
   Sparkles, 
   BookOpen, 
-  Folder, 
-  Save,
-  Check
+  Save
 } from 'lucide-react'
 import { useAuthStore } from '../context/authStore'
 
@@ -182,9 +179,9 @@ export const Notes: React.FC = () => {
   }
 
   const handleAddFolder = () => {
-    if (newFolderName.strip() && !folders.includes(newFolderName)) {
-      setFolders((prev) => [...prev, newFolderName.strip()])
-      setFolder(newFolderName.strip())
+    if (newFolderName.trim() && !folders.includes(newFolderName.trim())) {
+      setFolders((prev) => [...prev, newFolderName.trim()])
+      setFolder(newFolderName.trim())
       setNewFolderName('')
       setShowFolderModal(false)
     }
