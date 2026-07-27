@@ -13,7 +13,10 @@ import {
   Copy, 
   MessageSquare,
   Zap,
-  Radio
+  Radio,
+  Eye,
+  EyeOff,
+  Minimize2
 } from 'lucide-react'
 import { useAuthStore } from '../context/authStore'
 
@@ -32,6 +35,7 @@ export const VideoQA: React.FC = () => {
   const [streamMode, setStreamMode] = useState<'webcam' | 'screen'>('webcam')
   const [isStreaming, setIsStreaming] = useState(false)
   const [isAnalyzing, setIsAnalyzing] = useState(false)
+  const [autoHideOnScreenShare, setAutoHideOnScreenShare] = useState(true)
   
   // Audio & TTS States
   const [isMicListening, setIsMicListening] = useState(false)
@@ -73,6 +77,14 @@ export const VideoQA: React.FC = () => {
     }
   }, [autoInterval, isStreaming])
 
+  const hideAppWindow = async () => {
+    if (window.electronAPI?.hideWindow) {
+      await window.electronAPI.hideWindow()
+    } else if (window.electronAPI?.minimizeWindow) {
+      await window.electronAPI.minimizeWindow()
+    }
+  }
+
   const startStream = async (mode: 'webcam' | 'screen') => {
     stopStream()
     try {
@@ -95,6 +107,13 @@ export const VideoQA: React.FC = () => {
       }
       setStreamMode(mode)
       setIsStreaming(true)
+
+      // Auto-hide AI window if screen sharing is active
+      if (mode === 'screen' && autoHideOnScreenShare) {
+        setTimeout(() => {
+          hideAppWindow()
+        }, 500)
+      }
     } catch (err) {
       console.error('Failed to access media stream:', err)
       setIsStreaming(false)
@@ -130,6 +149,12 @@ export const VideoQA: React.FC = () => {
   }
 
   const handleAnalyzeFrame = async () => {
+    // If screen sharing and autoHide is enabled, hide app window first to get a clean desktop snapshot
+    if (streamMode === 'screen' && autoHideOnScreenShare) {
+      await hideAppWindow()
+      await new Promise((resolve) => setTimeout(resolve, 200))
+    }
+
     const base64Image = captureFrameBase64()
     if (!base64Image) return
     
@@ -286,6 +311,30 @@ export const VideoQA: React.FC = () => {
             </button>
           )}
 
+          {/* Auto-Hide Window on Screen Share Toggle */}
+          <button
+            onClick={() => setAutoHideOnScreenShare(!autoHideOnScreenShare)}
+            title={autoHideOnScreenShare ? "Auto-Hide AI Window during Screen Share: ENABLED" : "Auto-Hide AI Window during Screen Share: DISABLED"}
+            className={`px-2.5 py-1.5 rounded-lg border text-xs flex items-center gap-1.5 transition-colors cursor-pointer font-medium ${
+              autoHideOnScreenShare 
+                ? 'bg-amber-500/10 border-amber-500/30 text-amber-400' 
+                : 'bg-slate-900 border-slate-800 text-slate-500 hover:text-slate-300'
+            }`}
+          >
+            {autoHideOnScreenShare ? <EyeOff size={14} /> : <Eye size={14} />}
+            <span>Auto-Hide</span>
+          </button>
+
+          {/* Instant Hide App Window Button */}
+          <button
+            onClick={hideAppWindow}
+            title="Hide AI App Window (Press Alt+Space to unhide)"
+            className="px-2.5 py-1.5 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 text-xs rounded-lg flex items-center gap-1.5 transition-colors cursor-pointer"
+          >
+            <Minimize2 size={14} />
+            <span>Hide AI App</span>
+          </button>
+
           {/* TTS Audio Readout Toggle */}
           <button
             onClick={() => setTtsEnabled(!ttsEnabled)}
@@ -353,13 +402,21 @@ export const VideoQA: React.FC = () => {
               </div>
             )}
 
-            {/* Auto Stream Capture Interval Badge */}
-            {autoInterval > 0 && isStreaming && (
-              <div className="absolute bottom-3 left-3 bg-purple-950/80 backdrop-blur-md border border-purple-500/30 px-3 py-1 rounded-lg text-[11px] text-purple-300 flex items-center gap-1.5 animate-pulse">
-                <RefreshCw size={12} className="animate-spin text-purple-400" />
-                <span>Auto-analyzing every {autoInterval}s</span>
-              </div>
-            )}
+            {/* Auto Stream Capture Interval Badge & Screen Share Banner */}
+            <div className="absolute bottom-3 left-3 flex flex-col gap-1.5 pointer-events-none">
+              {autoInterval > 0 && isStreaming && (
+                <div className="bg-purple-950/80 backdrop-blur-md border border-purple-500/30 px-3 py-1 rounded-lg text-[11px] text-purple-300 flex items-center gap-1.5 animate-pulse w-fit">
+                  <RefreshCw size={12} className="animate-spin text-purple-400" />
+                  <span>Auto-analyzing every {autoInterval}s</span>
+                </div>
+              )}
+              {streamMode === 'screen' && isStreaming && (
+                <div className="bg-amber-950/80 backdrop-blur-md border border-amber-500/30 px-3 py-1 rounded-lg text-[10px] text-amber-300 flex items-center gap-1.5">
+                  <EyeOff size={12} className="text-amber-400" />
+                  <span>Auto-Hiding AI window on capture (Press Alt+Space to toggle)</span>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Real-Time Prompt Controls Bar */}

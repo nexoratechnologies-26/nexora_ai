@@ -110,6 +110,21 @@ ipcMain.handle('get-app-version', () => {
   return app.getVersion()
 })
 
+ipcMain.handle('minimize-window', () => {
+  if (mainWindow) mainWindow.minimize()
+})
+
+ipcMain.handle('hide-window', () => {
+  if (mainWindow) mainWindow.hide()
+})
+
+ipcMain.handle('show-window', () => {
+  if (mainWindow) {
+    mainWindow.show()
+    mainWindow.focus()
+  }
+})
+
 app.whenReady().then(() => {
   createWindow()
   registerGlobalHotkeys()

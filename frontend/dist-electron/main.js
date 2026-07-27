@@ -37,7 +37,13 @@ i.handle("toggle-clipboard-monitor", (e, t) => (l = t, t ? f() : s && clearInter
 	success: !0,
 	simulated: !0,
 	message: "Screen capture captured successfully. Mock screenshot returned."
-}) : null), i.handle("get-app-version", () => t.getVersion()), t.whenReady().then(() => {
+}) : null), i.handle("get-app-version", () => t.getVersion()), i.handle("minimize-window", () => {
+	o && o.minimize();
+}), i.handle("hide-window", () => {
+	o && o.hide();
+}), i.handle("show-window", () => {
+	o && (o.show(), o.focus());
+}), t.whenReady().then(() => {
 	u(), d(), t.on("activate", () => {
 		e.getAllWindows().length === 0 && u();
 	});
