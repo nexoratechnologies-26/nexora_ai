@@ -8,6 +8,7 @@ import { Dashboard } from './pages/Dashboard'
 import { Chat } from './pages/Chat'
 import { Documents } from './pages/Documents'
 import { ScreenshotAnalyzer } from './pages/ScreenshotAnalyzer'
+import { VideoQA } from './pages/VideoQA'
 import { Notes } from './pages/Notes'
 import { Workspace } from './pages/Workspace'
 import { PromptLibrary } from './pages/PromptLibrary'
@@ -60,6 +61,8 @@ function App() {
         return <Dashboard setActivePage={setActivePage} />
       case 'chat':
         return <Chat />
+      case 'video-qa':
+        return <VideoQA />
       case 'documents':
         return <Documents />
       case 'screenshot':

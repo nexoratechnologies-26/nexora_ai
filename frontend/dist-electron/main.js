@@ -1,89 +1,50 @@
-import { BrowserWindow, app, clipboard, globalShortcut, ipcMain } from "electron";
-import * as path from "path";
+import { BrowserWindow as e, app as t, clipboard as n, globalShortcut as r, ipcMain as i } from "electron";
+import * as a from "path";
 //#region electron/main.ts
-var mainWindow = null;
-var clipboardTimer = null;
-var lastClipboardText = "";
-var clipboardMonitoring = false;
-function createWindow() {
-	mainWindow = new BrowserWindow({
+var o = null, s = null, c = "", l = !1;
+function u() {
+	o = new e({
 		width: 1280,
 		height: 850,
 		minWidth: 1e3,
 		minHeight: 700,
-		show: false,
+		show: !1,
 		titleBarStyle: "hiddenInset",
 		webPreferences: {
-			preload: path.join(__dirname, "preload.js"),
-			contextIsolation: true,
-			nodeIntegration: false
+			preload: a.join(__dirname, "preload.js"),
+			contextIsolation: !0,
+			nodeIntegration: !1
 		}
-	});
-	if (process.env.VITE_DEV_SERVER_URL) {
-		mainWindow.loadURL(process.env.VITE_DEV_SERVER_URL);
-		mainWindow.webContents.openDevTools();
-	} else mainWindow.loadFile(path.join(__dirname, "../dist/index.html"));
-	mainWindow.once("ready-to-show", () => {
-		if (mainWindow) mainWindow.show();
-	});
-	mainWindow.on("closed", () => {
-		mainWindow = null;
+	}), process.env.VITE_DEV_SERVER_URL ? (o.loadURL(process.env.VITE_DEV_SERVER_URL), o.webContents.openDevTools()) : o.loadFile(a.join(__dirname, "../dist/index.html")), o.once("ready-to-show", () => {
+		o && o.show();
+	}), o.on("closed", () => {
+		o = null;
 	});
 }
-function registerGlobalHotkeys() {
-	globalShortcut.register("Alt+Space", () => {
-		if (mainWindow) if (mainWindow.isVisible()) mainWindow.hide();
-		else {
-			mainWindow.show();
-			mainWindow.focus();
-		}
+function d() {
+	r.register("Alt+Space", () => {
+		o && (o.isVisible() ? o.hide() : (o.show(), o.focus()));
 	});
 }
-function startClipboardMonitoring() {
-	if (clipboardTimer) clearInterval(clipboardTimer);
-	lastClipboardText = clipboard.readText();
-	clipboardTimer = setInterval(() => {
-		if (!clipboardMonitoring) return;
-		const currentText = clipboard.readText();
-		if (currentText && currentText !== lastClipboardText) {
-			lastClipboardText = currentText;
-			if (mainWindow) mainWindow.webContents.send("clipboard-changed", currentText);
-		}
+function f() {
+	s && clearInterval(s), c = n.readText(), s = setInterval(() => {
+		if (!l) return;
+		let e = n.readText();
+		e && e !== c && (c = e, o && o.webContents.send("clipboard-changed", e));
 	}, 1e3);
 }
-ipcMain.handle("toggle-clipboard-monitor", (event, enabled) => {
-	clipboardMonitoring = enabled;
-	if (enabled) startClipboardMonitoring();
-	else if (clipboardTimer) clearInterval(clipboardTimer);
-	return clipboardMonitoring;
-});
-ipcMain.handle("capture-screen", async () => {
-	if (!mainWindow) return null;
-	mainWindow.hide();
-	await new Promise((resolve) => setTimeout(resolve, 350));
-	mainWindow.show();
-	return {
-		success: true,
-		simulated: true,
-		message: "Screen capture captured successfully. Mock screenshot returned."
-	};
-});
-ipcMain.handle("get-app-version", () => {
-	return app.getVersion();
-});
-app.whenReady().then(() => {
-	createWindow();
-	registerGlobalHotkeys();
-	app.on("activate", () => {
-		if (BrowserWindow.getAllWindows().length === 0) createWindow();
+i.handle("toggle-clipboard-monitor", (e, t) => (l = t, t ? f() : s && clearInterval(s), l)), i.handle("capture-screen", async () => o ? (o.hide(), await new Promise((e) => setTimeout(e, 350)), o.show(), {
+	success: !0,
+	simulated: !0,
+	message: "Screen capture captured successfully. Mock screenshot returned."
+}) : null), i.handle("get-app-version", () => t.getVersion()), t.whenReady().then(() => {
+	u(), d(), t.on("activate", () => {
+		e.getAllWindows().length === 0 && u();
 	});
-});
-app.on("will-quit", () => {
-	globalShortcut.unregisterAll();
-	if (clipboardTimer) clearInterval(clipboardTimer);
-});
-app.on("window-all-closed", () => {
-	if (process.platform !== "darwin") app.quit();
+}), t.on("will-quit", () => {
+	r.unregisterAll(), s && clearInterval(s);
+}), t.on("window-all-closed", () => {
+	process.platform !== "darwin" && t.quit();
 });
 //#endregion
 export {};

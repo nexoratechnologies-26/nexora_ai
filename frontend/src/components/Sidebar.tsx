@@ -2,6 +2,7 @@ import React from 'react'
 import { 
   LayoutDashboard, 
   MessageSquare, 
+  Video,
   FileText, 
   Camera, 
   BookOpen, 
@@ -29,6 +30,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activePage, setActivePage }) =
   const navItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'chat', label: 'AI Chat', icon: MessageSquare },
+    { id: 'video-qa', label: 'Real-Time Video', icon: Video },
     { id: 'documents', label: 'Documents', icon: FileText },
     { id: 'screenshot', label: 'Screenshots', icon: Camera },
     { id: 'notes', label: 'Notes', icon: BookOpen },

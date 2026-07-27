@@ -15,7 +15,8 @@ from app.routers import (
     prompts,
     clipboard,
     settings as settings_router,
-    workspace
+    workspace,
+    video
 )
 
 # Initialize database tables
@@ -47,6 +48,7 @@ app.include_router(prompts.router, prefix=settings.API_V1_STR)
 app.include_router(clipboard.router, prefix=settings.API_V1_STR)
 app.include_router(settings_router.router, prefix=settings.API_V1_STR)
 app.include_router(workspace.router, prefix=settings.API_V1_STR)
+app.include_router(video.router, prefix=settings.API_V1_STR)
 
 @app.get("/")
 def read_root():
