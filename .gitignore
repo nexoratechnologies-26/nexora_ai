@@ -1,0 +1,39 @@
+# Node
+node_modules/
+dist/
+build/
+*.log
+
+# Python
+venv/
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Local databases & configurations
+*.db
+*.sqlite
+*.sqlite3
+.env
+.env.*
+!*.env.example
+chroma_db/
+nexora_data/
+
+# IDEs
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# OS files
+.DS_Store
+Thumbs.db

@@ -1,0 +1,14 @@
+{
+  "name": "nexora-ai",
+  "version": "1.0.0",
+  "description": "Nexora AI - Intelligent Desktop Copilot",
+  "scripts": {
+    "install:all": "npm install --prefix frontend && python -m venv venv && .\\venv\\Scripts\\pip install -r backend/requirements.txt",
+    "dev:frontend": "npm run dev --prefix frontend",
+    "dev:backend": "if exist venv\\Scripts\\python.exe (.\\venv\\Scripts\\python backend/main.py) else (python backend/main.py)",
+    "dev": "concurrently --kill-others \"npm run dev:frontend\" \"npm run dev:backend\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
