@@ -37,9 +37,10 @@ class Settings(BaseSettings):
 
 settings = Settings()
 
-# Ensure directories exist
-os.makedirs(settings.DATA_DIR, exist_ok=True)
-os.makedirs(settings.UPLOAD_DIR, exist_ok=True)
-os.makedirs(settings.SCREENSHOT_DIR, exist_ok=True)
-os.makedirs(settings.NOTES_DIR, exist_ok=True)
-os.makedirs(settings.CHROMA_DB_DIR, exist_ok=True)
+# Ensure directories exist safely (fallback for read-only serverless environments like Vercel)
+for d in [settings.DATA_DIR, settings.UPLOAD_DIR, settings.SCREENSHOT_DIR, settings.NOTES_DIR, settings.CHROMA_DB_DIR]:
+    try:
+        os.makedirs(d, exist_ok=True)
+    except Exception:
+        pass
+
